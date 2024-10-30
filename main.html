@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouncing DVD Logo and Draggable XP Box</title>
+    <link rel="icon" type="image/png" href="transparentY2Klogo.png">
+    <style>
+        @font-face {
+            font-family: 'SpaceGrotesk';
+            src: url('SpaceGrotesk-VariableFont_wght.ttf') format('truetype');
+            font-weight: 100;
+            font-style: normal;
+        }
+
+        :root {
+            --bg-color: rgb(15, 15, 15);
+            --text-color: white;
+            --highlight-color: #ffcc00;
+            --navbar-padding: 2rem 1rem;
+            --icon-margin: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'SpaceGrotesk', Arial, sans-serif;
+            font-weight: 800;
+            background-color: var(--bg-color);
+            position: relative;
+        }
+
+        .navbar {
+            width: 100%;
+            background-color: transparent;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: var(--navbar-padding);
+            position: fixed;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links span {
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: inherit;
+            cursor: pointer;
+        }
+
+        .dvd-logo {
+            width: 450px;
+            height: 200px;
+            background-image: url('smallerblackY2Klogo.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: absolute;
+        }
+
+        .custom-xp-box {
+            width: 300px;
+            background-color: #141414;
+            border: 2px solid #313131;
+            border-radius: 3px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            display: block;
+        }
+
+        .custom-title-bar {
+            background-color: #292929;
+            color: #ffffff;
+            padding: 5px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+
+        .custom-title-bar-text {
+            margin-left: 10px;
+        }
+
+        .custom-title-bar-controls button {
+            width: 15px;
+            height: 15px;
+            background-color: #e81123;
+            border: none;
+            margin-right: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .custom-title-bar-controls button:nth-child(2) {
+            background-color: #fbbc05;
+        }
+
+        .custom-title-bar-controls button:nth-child(3) {
+            background-color: #34a853;
+        }
+
+        .custom-window-content {
+            padding: 35px;
+            color: #eeeeee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            line-height: 2;
+        }
+
+        .custom-button {
+            background-color: #313131;
+            color: #eeeeee;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .custom-button:hover {
+            background-color: #444444;
+        }
+
+        .notepad-box {
+            width: 300px;
+            height: 400px;
+            background-color: #1e1e1e;
+            border: 2px solid #313131;
+            border-radius: 3px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            display: block;
+        }
+
+        .notepad-content {
+            width: 100%;
+            height: calc(100% - 30px);
+            background-color: #1e1e1e;
+            color: #fff;
+            border: none;
+            outline: none;
+            resize: none;
+            padding: 15px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .desktop-icon {
+            width: 160px;
+            text-align: center;
+            margin: var(--icon-margin) auto;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 16px;
+            position: absolute;
+        }
+
+        .desktop-icon img {
+            width: 90px;
+            height: 90px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .notepad-icon {
+            top: 10px;
+            left: 10px;
+        }
+
+        .games-icon {
+            top: 130px;
+            left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-links">
+        <span onclick="toggleWindow('dexscreenerBox')">Dexscreener</span>
+        <span onclick="toggleWindow('tokenomicsBox')">Tokenomics</span>
+        <span onclick="toggleWindow('telegramBox')">Telegram</span>
+        <span onclick="toggleWindow('twitterBox')">Twitter</span>
+        <span onclick="toggleWindow('memeGeneratorBox')">Meme Generator</span>
+    </div>
+</nav>
+
+<div class="dvd-logo" id="dvdLogo" style="top: 100px; left: 100px;"></div>
+
+<!-- Desktop Icon for Notepad -->
+<div class="desktop-icon notepad-icon" onclick="toggleWindow('notepadBox')">
+    <img src="notepad.png" alt="Notepad Icon">
+    <span>Notepad.exe</span>
+</div>
+
+<!-- Desktop Icon for Games -->
+<div class="desktop-icon games-icon" onclick="toggleWindow('gamesBox')">
+    <img src="controller.png" alt="Games Icon">
+    <span>Games.exe</span>
+</div>
+
+<!-- Box for Dexscreener -->
+<article class="custom-xp-box" id="dexscreenerBox" style="top: 40%; left: 50%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">Dexscreener.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('dexscreenerBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('dexscreenerBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <p>Placeholder.</p>
+        <a class="custom-button" href="http://example.com/dexscreener" target="_blank">Open Dexscreener</a>
+    </div>
+</article>
+
+<!-- Box for Tokenomics -->
+<article class="custom-xp-box" id="tokenomicsBox" style="top: 15%; left: 35%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">Tokenomics.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('tokenomicsBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('tokenomicsBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <p>Embrace the $Y2K Renaissance. Nostalgia Fuels the Future. Make Internet Great Again.</p>
+    </div>
+</article>
+
+<!-- Box for Telegram -->
+<article class="custom-xp-box" id="telegramBox" style="top: 80%; left: 45%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">Telegram.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('telegramBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('telegramBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <p>We are waiting for you.</p>
+        <a class="custom-button" href="https://t.me/Y2Kdotcom" target="_blank">Join Telegram</a>
+    </div>
+</article>
+
+<!-- Box for Twitter -->
+<article class="custom-xp-box" id="twitterBox" style="top: 25%; left: 10%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">Twitter.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('twitterBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('twitterBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <p>Placeholder.</p>
+        <a class="custom-button" href="https://x.com/y2kdotcomsolana" target="_blank">View on Twitter</a>
+    </div>
+</article>
+
+<!-- Box for Meme Generator -->
+<article class="custom-xp-box" id="memeGeneratorBox" style="top: 50%; left: 60%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">Meme Generator.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('memeGeneratorBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('memeGeneratorBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <p>Coming Soon</p>
+    </div>
+</article>
+
+<!-- Box for Notepad -->
+<article class="notepad-box" id="notepadBox" style="top: 10%; left: 70%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">Notepad.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('notepadBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('notepadBox').style.display='none'"></button>
+        </div>
+    </div>
+    <textarea class="notepad-content">Type your notes here...</textarea>
+</article>
+
+<!-- Box for Games -->
+<article class="custom-xp-box" id="gamesBox" style="top: 56%; left: 25%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">Games.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('gamesBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('gamesBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <p>Coming Soon.</p>
+    </div>
+</article>
+
+<script>
+    function makeDraggable(el) {
+        el.onmousedown = function(e) {
+            var offsetX = e.clientX - el.getBoundingClientRect().left;
+            var offsetY = e.clientY - el.getBoundingClientRect().top;
+            
+            document.onmousemove = function(e) {
+                el.style.left = (e.clientX - offsetX) + 'px';
+                el.style.top = (e.clientY - offsetY) + 'px';
+            };
+
+            document.onmouseup = function() {
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
+        };
+    }
+ 
+    function toggleWindow(id) {
+        const box = document.getElementById(id);
+        if (box.style.display === 'none' || box.style.display === '') {
+            box.style.display = 'block';
+        } else {
+            box.style.display = 'none';
+        }
+    }
+
+    document.querySelectorAll('.custom-xp-box, .notepad-box').forEach(makeDraggable);
+
+    var dvdLogo = document.getElementById('dvdLogo');
+    var container = document.body;
+
+    var vx = 2;  // x velocity
+    var vy = 2;  // y velocity
+
+    function updatePosition() {
+        // Get current position
+        var rect = dvdLogo.getBoundingClientRect();
+        
+        // Calculate next position
+        var newLeft = rect.left + vx;
+        var newTop = rect.top + vy;
+
+        // Check for collision with the edges
+        if (newLeft < 0 || newLeft + rect.width > container.clientWidth) {
+            vx = -vx;  // Reverse x direction
+        }
+        if (newTop < 0 || newTop + rect.height > container.clientHeight) {
+            vy = -vy;  // Reverse y direction
+        }
+
+        // Update position
+        dvdLogo.style.left = newLeft + 'px';
+        dvdLogo.style.top = newTop + 'px';
+    }
+
+    function startAnimation() {
+        setInterval(updatePosition, 20);
+    }
+
+    startAnimation();
+</script>
+
+</body>
+</html>

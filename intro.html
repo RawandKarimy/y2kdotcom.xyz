@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booting Sequence</title>
+  <style>
+    body {
+      background-color: black;
+      color: #00FF00;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.5em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #bootSequence {
+      white-space: pre-line;
+      line-height: 1.5;
+      text-shadow: 0 0 5px #00FF00, /* Slight glow */
+                   0 0 10px #00FF00, /* Outer glow */
+                   0 0 20px #00FF00; /* Stronger glow effect */
+      filter: blur(0.8px); /* Blurry effect */
+    }
+    .hidden {
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="bootSequence" class="hidden">
+    Starting DOTCOM...<br>
+    Y2K is testing extended memory...done.<br>
+    C:\>C:\DOS\DOTCOM.EXE /X<br>
+    C:\>_
+  </div>
+
+  <script>
+    // Simulate the booting sequence
+    const bootSequence = document.getElementById('bootSequence');
+    const bootText = bootSequence.innerHTML;
+    let displayText = '';
+    let index = 0;
+    
+    bootSequence.innerHTML = '';
+    bootSequence.classList.remove('hidden');
+
+    const bootInterval = setInterval(() => {
+      if (index < bootText.length) {
+        displayText += bootText[index] === '\n' ? '<br>' : bootText[index];
+        bootSequence.innerHTML = displayText + '_';
+        index++;
+      } else {
+        clearInterval(bootInterval);
+        setTimeout(() => {
+          // Redirect after 100 ms to main.html
+          window.location.href = "main.html";
+        }, 100);
+      }
+    }, 20); // Adjust typing speed (lower value for faster typing)
+
+  </script>
+
+</body>
+</html>
