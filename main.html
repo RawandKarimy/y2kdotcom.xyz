@@ -126,22 +126,24 @@
             line-height: 2;
         }
 
-        .custom-button {
-            background-color: #313131;
-            color: #eeeeee;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
+.custom-button {
+        background-color: #313131;
+        color: #eeeeee;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        font-size: 14px;
+        font-family: inherit; /* Ensures font consistency /
+        transition: background-color 0.2s;
+        outline: none; / Removes focus outline */
+    }
 
-        .custom-button:hover {
-            background-color: #444444;
-        }
+    .custom-button:hover {
+        background-color: #444444;
+    }
 
         .notepad-box {
             width: 300px;
@@ -315,19 +317,180 @@
 </article>
 
 <!-- Box for Games -->
-<article class="custom-xp-box" id="gamesBox" style="top: 56%; left: 25%;">
+<!-- Games Box styled like an old file explorer with a faux search bar -->
+<article class="custom-xp-box" id="gamesBox" style="top: 30%; left: 15%; width: 600px; height: 550px;">
     <div class="custom-title-bar">
-        <span class="custom-title-bar-text">Games.exe</span>
+        <span class="custom-title-bar-text">Games.exe - Explorer</span>
         <div class="custom-title-bar-controls">
             <button aria-label="Minimize" onclick="toggleWindow('gamesBox')"></button>
             <button aria-label="Maximize"></button>
             <button aria-label="Close" onclick="document.getElementById('gamesBox').style.display='none'"></button>
         </div>
     </div>
-    <div class="custom-window-content">
-        <p>Coming Soon.</p>
+
+    <!-- Faux search bar for file path -->
+    <div style="background-color: #292929; color: #ddd; padding: 8px; font-size: 14px; font-family: inherit; display: flex; align-items: center;">
+        <span>🔍</span>
+        <input type="text" readonly value="system32/applications/games/snake.exe"
+               style="width: 100%; background: none; color: inherit; border: none; outline: none; padding-left: 8px; font-family: inherit;">
+    </div>
+
+    <!-- Explorer View with icon aligned to the left -->
+    <div id="explorerView" class="custom-window-content" style="display: flex; align-items: flex-start; justify-content: flex-start; gap: 20px; padding: 20px;">
+        <!-- Icon to open the snake game -->
+        <div class="desktop-icon" onclick="openSnakeGame()" style="text-align: center; cursor: pointer;">
+            <img src="snake_icon.png" alt="Snake Icon" style="width: 64px; height: 64px;">
+            <span style="color: white; font-size: 14px;">snake.exe</span>
+        </div>
+    </div>
+
+    <!-- Snake Game Content, initially hidden -->
+    <div id="gameView" class="custom-window-content" style="display: none; flex-direction: row; align-items: flex-start; gap: 20px; padding: 20px;">
+        <!-- Left column: Snake game and score -->
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <canvas id="snakeGameCanvas" width="300" height="300" style="background-color: rgb(15, 15, 15); border: 2px solid #313131;"></canvas>
+            
+            <!-- Score and High Score beneath the game -->
+            <div style="color: white; font-size: 18px; margin-top: 10px;">
+                <div>Score: <span id="scoreDisplay">0</span></div>
+                <div>High Score: <span id="highScoreDisplay">0</span></div>
+            </div>
+        </div>
+
+        <!-- Right column: Buttons -->
+        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 15px; color: white;">
+            <button id="startButton" onclick="startGame()" class="custom-button" style="border: none; outline: none;">Start/Restart</button>
+            <button onclick="closeSnakeGame()" class="custom-button" style="border: none; outline: none; margin-top: 10px;">Back to Explorer</button>
+        </div>
     </div>
 </article>
+
+<script>
+    // Toggle to show the game view inside gamesBox
+    function openSnakeGame() {
+        document.getElementById('explorerView').style.display = 'none';
+        document.getElementById('gameView').style.display = 'flex';
+    }
+
+    // Toggle to return to explorer view
+    function closeSnakeGame() {
+        document.getElementById('gameView').style.display = 'none';
+        document.getElementById('explorerView').style.display = 'flex';
+        clearInterval(game); // Stop the game when navigating back
+    }
+
+    // Snake Game Variables
+    const canvas = document.getElementById('snakeGameCanvas');
+    const ctx = canvas.getContext('2d');
+    const box = 15;
+    let snake, direction, food, score, game;
+    let speed = 150;
+    let gameOver = false;
+    let highScore = localStorage.getItem('highScore') || 0;
+
+    // Initialize game values
+    function initializeGame() {
+        snake = [{ x: 9 * box, y: 9 * box }];
+        direction = 'RIGHT';
+        score = 0;
+        updateScoreDisplay();
+        food = {
+            x: Math.floor(Math.random() * (canvas.width / box)) * box,
+            y: Math.floor(Math.random() * (canvas.height / box)) * box
+        };
+        gameOver = false;
+        clearInterval(game);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Start or restart the game
+    function startGame() {
+        initializeGame();
+        game = setInterval(drawGame, speed);
+        document.getElementById('startButton').blur();
+    }
+
+    // Update score and high score displays
+    function updateScoreDisplay() {
+        document.getElementById('scoreDisplay').textContent = score;
+        document.getElementById('highScoreDisplay').textContent = highScore;
+    }
+
+    // Control the snake
+    document.addEventListener('keydown', changeDirection);
+
+    function changeDirection(event) {
+        if (event.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
+        if (event.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
+        if (event.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
+        if (event.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
+    }
+
+    function drawGame() {
+        if (gameOver) {
+            ctx.fillStyle = 'red';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
+
+            // Update high score if current score is greater
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('highScore', highScore);
+            }
+            updateScoreDisplay();
+            return;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        snake.forEach((segment, index) => {
+            ctx.fillStyle = index === 0 ? 'green' : 'lime';
+            ctx.fillRect(segment.x, segment.y, box, box);
+            ctx.strokeStyle = 'darkgreen';
+            ctx.strokeRect(segment.x, segment.y, box, box);
+        });
+
+        ctx.fillStyle = 'red';
+        ctx.fillRect(food.x, food.y, box, box);
+
+        let head = { x: snake[0].x, y: snake[0].y };
+        if (direction === 'LEFT') head.x -= box;
+        if (direction === 'UP') head.y -= box;
+        if (direction === 'RIGHT') head.x += box;
+        if (direction === 'DOWN') head.y += box;
+
+        if (head.x === food.x && head.y === food.y) {
+            score++;
+            updateScoreDisplay();
+            food = {
+                x: Math.floor(Math.random() * (canvas.width / box)) * box,
+                y: Math.floor(Math.random() * (canvas.height / box)) * box
+            };
+        } else {
+            snake.pop();
+        }
+
+        snake.unshift(head);
+
+        if (
+            head.x < 0 || head.x + box > canvas.width || 
+            head.y < 0 || head.y + box > canvas.height || 
+            collision(head, snake)
+        ) {
+            clearInterval(game);
+            gameOver = true;
+            drawGame();
+        }
+    }
+
+    function collision(head, array) {
+        return array.slice(1).some(segment => segment.x === head.x && segment.y === head.y);
+    }
+
+    initializeGame();
+    updateScoreDisplay();
+</script>
 
 <script>
     function makeDraggable(el) {
