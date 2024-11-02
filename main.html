@@ -195,6 +195,128 @@
             top: 130px;
             left: 10px;
         }
+        .ipod {
+            background-color: #1e1e1e;
+            border-radius: 20px;
+            width: 220px;
+            height: 160px; /* Show only upper part initially */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: height 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        /* iPod expands fully on hover */
+        .ipod:hover {
+            height: 360px; /* Full height to show control pad */
+        }
+
+        /* iPod screen with GIF background, overlay, and border */
+        .screen {
+            position: relative; /* To contain the overlay */
+            background-image: url('Y2K_ipod_background.gif');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            height: 160px;
+            width: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            text-align: center;
+            border-radius: 10px;
+            border: 4px solid rgb(15, 15, 15); /* Border around the screen */
+            margin: 10px auto 0;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+
+        /* Dark overlay for better text readability */
+        .overlay {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -1;
+            width: 102%;
+            height: 102%;
+            background-color: rgba(0, 0, 0, 0.5); /* 50% black overlay */
+            border-radius: 10px;
+            z-index: 1; /* Place overlay below the text */
+        }
+
+        /* Ensure text stays above the overlay */
+        .text-content {
+            position: relative;
+            z-index: 2; /* Keep text above the overlay */
+        }
+
+        /* Control pad styling, resembling an iPod */
+        .control-pad {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            margin: 15px auto 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Circular center button */
+        .center-button {
+            width: 50px;
+            height: 50px;
+            background-color: #cfcfcf;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: absolute;
+        }
+
+        /* Control buttons positioning around the circle */
+        .control-button {
+            position: absolute;
+            font-size: 12px;
+            font-weight: bold;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .control-button.menu {
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .control-button.prev {
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .control-button.next {
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .control-button.play-pause {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
     </style>
 </head>
 <body>
@@ -364,8 +486,81 @@
         </div>
     </div>
 </article>
+<div class="ipod">
+    <!-- Display song title on screen with GIF background -->
+    <div class="screen">
+        <!-- Overlay for dimming the background -->
+        <div class="overlay"></div>
+        <!-- Text content displayed above the overlay -->
+        <div class="text-content" id="screen">Loading...</div>
+    </div>
 
+    <!-- Control pad with circular buttons layout -->
+    <div class="control-pad">
+        <button class="control-button menu" onclick="showMenu()">MENU</button>
+        <button class="control-button prev" onclick="prevTrack()">&#9664;</button>
+        <button class="control-button next" onclick="nextTrack()">&#9654;</button>
+        <button class="control-button play-pause" onclick="togglePlayPause()">&#10074;&#10074; / &#9654;</button>
+        <div class="center-button" onclick="selectCenter()">OK</div>
+    </div>
+</div>
+
+<!-- Audio player element -->
+<audio id="audioPlayer"></audio>
 <script>
+    const audio = document.getElementById('audioPlayer');
+    const screen = document.getElementById('screen');
+    let isPlaying = false;
+    let currentTrack = 0;
+
+
+    // Define the playlist with song titles and paths
+    const playlist = [
+    { title: 'JAY-Z - Empire State Of Mind ft. Alicia Keys.mp3', src: 'songs/JAY-Z - Empire State Of Mind ft. Alicia Keys.mp3' },
+        { title: 'Nirvana - Smells Like Teen Spirit', src: 'songs/Nirvana - Smells Like Teen Spirit (Official Music Video).mp3' },
+        { title: 'Kanye West - All Of The Lights ft. Rihanna', src: 'songs/Kanye West - All Of The Lights ft. Rihanna.mp3' }
+    ];
+
+    // Load and play the current track with volume set to 50%
+    function loadTrack() {
+        const track = playlist[currentTrack];
+        audio.src = track.src;
+        audio.volume = 0.15; // Set volume to 50%
+        screen.textContent = Playing: ${track.title};
+        audio.play(); // Attempt to start playing on page load
+        isPlaying = true;
+    }
+
+    // Toggle play/pause for the audio player
+    function togglePlayPause() {
+        if (isPlaying) {
+            audio.pause();
+            screen.textContent = Paused: ${playlist[currentTrack].title};
+        } else {
+            audio.play();
+            screen.textContent = Playing: ${playlist[currentTrack].title};
+        }
+        isPlaying = !isPlaying;
+    }
+
+    // Play the next track
+    function nextTrack() {
+        currentTrack = (currentTrack + 1) % playlist.length;
+        loadTrack();
+        if (isPlaying) audio.play();
+    }
+
+    // Play the previous track
+    function prevTrack() {
+        currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+        loadTrack();
+        if (isPlaying) audio.play();
+    }
+
+    // Load the first track initially and attempt to auto-play
+    document.addEventListener("DOMContentLoaded", () => {
+        loadTrack();
+    }); 
     // Toggle to show the game view inside gamesBox
     function openSnakeGame() {
         document.getElementById('explorerView').style.display = 'none';
