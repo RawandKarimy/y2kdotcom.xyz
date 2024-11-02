@@ -526,7 +526,7 @@
         const track = playlist[currentTrack];
         audio.src = track.src;
         audio.volume = 0.15; // Set volume to 50%
-        screen.textContent = Playing: ${track.title};
+        screen.textContent = 'Playing: ${track.title}';
         audio.play(); // Attempt to start playing on page load
         isPlaying = true;
     }
@@ -535,10 +535,10 @@
     function togglePlayPause() {
         if (isPlaying) {
             audio.pause();
-            screen.textContent = Paused: ${playlist[currentTrack].title};
+            screen.textContent = 'Paused: ${playlist[currentTrack].title}';
         } else {
             audio.play();
-            screen.textContent = Playing: ${playlist[currentTrack].title};
+            screen.textContent = 'Playing: ${playlist[currentTrack].title}';
         }
         isPlaying = !isPlaying;
     }
