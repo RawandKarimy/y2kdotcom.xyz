@@ -324,6 +324,7 @@
 
 <nav class="navbar">
     <div class="nav-links">
+        <span onclick="toggleWindow('coingeckoBox')">CoinGecko</span>
         <span onclick="toggleWindow('dexscreenerBox')">Dexscreener</span>
         <span onclick="toggleWindow('tokenomicsBox')">Tokenomics</span>
         <span onclick="toggleWindow('telegramBox')">Telegram</span>
@@ -345,6 +346,21 @@
     <img src="controller.png" alt="Games Icon">
     <span>Games.exe</span>
 </div>
+
+<!-- CoinGecko Box -->
+<article class="custom-xp-box" id="coingeckoBox" style="top: 20%; left: 55%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">CoinGecko.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('coingeckoBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('coingeckoBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <a class="custom-button" href="https://www.coingecko.com/no/coins/dotcom" target="_blank">Open CoinGecko</a>
+    </div>
+</article>
 
 <!-- Box for Dexscreener -->
 <article class="custom-xp-box" id="dexscreenerBox" style="top: 40%; left: 50%;">
