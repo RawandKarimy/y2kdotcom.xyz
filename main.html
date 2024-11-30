@@ -324,6 +324,7 @@
 
 <nav class="navbar">
     <div class="nav-links">
+        <span onclick="toggleWindow('jupiterBox')">Jupiter</span>
         <span onclick="toggleWindow('coingeckoBox')">CoinGecko</span>
         <span onclick="toggleWindow('dexscreenerBox')">Dexscreener</span>
         <span onclick="toggleWindow('tokenomicsBox')">Tokenomics</span>
@@ -346,6 +347,21 @@
     <img src="controller.png" alt="Games Icon">
     <span>Games.exe</span>
 </div>
+
+<!-- Jupiter Box -->
+<article class="custom-xp-box" id="jupiterBox" style="top: 70%; left: 70%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">Jupiter.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('jupiterBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('jupiterBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <a class="custom-button" href="https://jup.ag/swap/SOL-Y2K" target="_blank">Open Jupiter</a>
+    </div>
+</article>
 
 <!-- CoinGecko Box -->
 <article class="custom-xp-box" id="coingeckoBox" style="top: 20%; left: 55%;">
