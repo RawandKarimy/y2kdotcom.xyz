@@ -145,6 +145,81 @@
         background-color: #444444;
     }
 
+    /* Media queries for responsiveness */
+    @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .dvd-logo {
+                width: 300px;
+                height: 150px;
+                top: 50px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .custom-xp-box {
+                width: 90%;
+                left: 5%;
+                top: auto;
+            }
+
+            .custom-title-bar {
+                font-size: 12px;
+            }
+
+            .custom-window-content {
+                padding: 20px;
+                font-size: 12px;
+            }
+
+            .custom-button {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 0.5rem;
+            }
+
+            .nav-links {
+                gap: 0.5rem;
+            }
+
+            .dvd-logo {
+                width: 200px;
+                height: 100px;
+                top: 20px;
+            }
+
+            .custom-xp-box {
+                width: 100%;
+                left: 0;
+            }
+
+            .custom-title-bar {
+                padding: 3px;
+            }
+
+            .custom-window-content {
+                padding: 15px;
+            }
+
+            .custom-button {
+                padding: 6px 12px;
+                font-size: 10px;
+            }
+        }
+        
         .notepad-box {
             width: 300px;
             height: 400px;
@@ -783,6 +858,37 @@
 
     startAnimation();
 </script>
+<script>
+    function toggleWindow(id) {
+        const box = document.getElementById(id);
+        if (box.style.display === 'none' || box.style.display === '') {
+            box.style.display = 'block';
+        } else {
+            box.style.display = 'none';
+        }
+    }
+
+    function makeDraggable(el) {
+        el.onmousedown = function(e) {
+            var offsetX = e.clientX - el.getBoundingClientRect().left;
+            var offsetY = e.clientY - el.getBoundingClientRect().top;
+                
+            document.onmousemove = function(e) {
+                el.style.left = (e.clientX - offsetX) + 'px';
+                el.style.top = (e.clientY - offsetY) + 'px';
+            };
+
+            document.onmouseup = function() {
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
+        };
+    }
+
+    // Apply makeDraggable to elements
+    document.querySelectorAll('.custom-xp-box').forEach(makeDraggable);
+</script>
+
 
 </body>
 </html>
