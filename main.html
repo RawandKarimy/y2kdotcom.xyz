@@ -420,6 +420,8 @@
 
 <nav class="navbar">
     <div class="nav-links">
+        <span onclick="toggleWindow('instagramBox')">Instagram</span>
+        <span onclick="toggleWindow('tiktokBox')">TikTok</span>
         <span onclick="toggleWindow('jupiterBox')">Jupiter</span>
         <span onclick="toggleWindow('coingeckoBox')">CoinGecko</span>
         <span onclick="toggleWindow('dexscreenerBox')">Dexscreener</span>
@@ -443,6 +445,36 @@
     <img src="controller.png" alt="Games Icon">
     <span>Games.exe</span>
 </div>
+
+<!-- Instagram Box -->
+<article class="custom-xp-box" id="instagramBox" style="top: 10%; left: 20%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">Instagram.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('instagramBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('instagramBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <a class="custom-button" href="https://www.instagram.com/y2k.dotcom" target="_blank">Open Instagram</a>
+    </div>
+</article>
+
+<!-- TikTok Box -->
+<article class="custom-xp-box" id="tiktokBox" style="top: 60%; left: 80%;">
+    <div class="custom-title-bar">
+        <span class="custom-title-bar-text">TikTok.exe</span>
+        <div class="custom-title-bar-controls">
+            <button aria-label="Minimize" onclick="toggleWindow('tiktokBox')"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close" onclick="document.getElementById('tiktokBox').style.display='none'"></button>
+        </div>
+    </div>
+    <div class="custom-window-content">
+        <a class="custom-button" href="https://www.tiktok.com/@y2k.dotcom.solana" target="_blank">Open TikTok</a>
+    </div>
+</article>
 
 <!-- Jupiter Box -->
 <article class="custom-xp-box" id="jupiterBox" style="top: 70%; left: 70%;">
